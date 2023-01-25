@@ -5,26 +5,27 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ClienteController extends Controller
 {
     
-    public function __construct(Cliente $cliente, Request $request)
+    public function __construct(public Cliente $cliente, public Request $request)
     {
-        $this->$cliente = $cliente;
-        $this->$request = $request;
+        $this->cliente = $cliente;
+        $this->request = $request;
     }
 
     public function index()
     {
-        $data = $this->$cliente->all();
+        $data = $this->cliente->all();
         return response()->json($data);
     }
 
     /* Inserindo registros no BD */
     public function store(Request $request)
     {
-        $this->validate($request, $this->$cliente->rules());
+        $this->validate($request, $this->cliente->rules());
 
         $dataForm = $request->all();
 
@@ -34,18 +35,30 @@ class ClienteController extends Controller
 
             $name = uniqid(date('His'));
 
-            $nameFile = "${name}.{$extension}";
+            $nameFile = "${name}.${extension}";
 
+            $upload = Image::make($dataForm['image'])->resize(177, 236)->save(storage_path("app/public/clientes/$nameFile", 70));
+
+            if (!$upload) {
+                return response()->json(['error' => 'Falha ao fazer upload'], 500);
+            } else {
+                $dataForm['image'] = $nameFile;
+            }
 
         }
 
-        $data = $this->$cliente->create($dataForm);
+        $data = $this->cliente->create($dataForm);
 
         return response()->json($data, 201);
     }
 
     public function show($id)
     {
+        if ($data = $this->cliente->find($id)) {
+            return response()->json(['error' => 'Nada foi encontrado'], 404);
+        } else {
+            return response()->json($data);
+        }
         
     }
 
@@ -56,6 +69,12 @@ class ClienteController extends Controller
 
     public function destroy($id)
     {
-        
+        if ($data = $this->cliente->find($id)) {
+            return response()->json(['error' => 'Nada foi encontrado'], 404);
+        }
+
+        if ($data->image) {
+            Storage::disk('public')
+        }
     }
 }
