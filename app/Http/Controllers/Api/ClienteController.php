@@ -65,6 +65,36 @@ class ClienteController extends Controller
     public function update(Request $request, $id)
     {
         
+        $this->validate($request, $this->cliente->rules());
+
+        $dataForm = $request->all();
+
+        if($request->hasFile('image') && $request->file('imagem')->isValid()) {
+
+            if ($data->image) {
+                Storage::disk('public')->delete("/clientes/$data->image");
+            }
+
+            $extension = $request->image->extension();
+
+            $name = uniqid(date('His'));
+
+            $nameFile = "${name}.${extension}";
+
+            $upload = Image::make($dataForm['image'])->resize(177, 236)->save(storage_path("app/public/clientes/$nameFile", 70));
+
+            if (!$upload) {
+                return response()->json(['error' => 'Falha ao fazer upload'], 500);
+            } else {
+                $dataForm['image'] = $nameFile;
+            }
+
+        }
+
+        $data->update($dataForm);
+
+        return response()->json($data, 201);
+
     }
 
     public function destroy($id)
@@ -74,7 +104,9 @@ class ClienteController extends Controller
         }
 
         if ($data->image) {
-            Storage::disk('public')
+            Storage::disk('public')->delete("/clientes/$data->image");
         }
+        $data->delete();
+        return response()->json(['success'=> 'Deletado com sucesso!']);
     }
 }
