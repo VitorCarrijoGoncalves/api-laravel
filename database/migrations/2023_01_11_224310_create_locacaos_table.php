@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('locacaos', function (Blueprint $table) {
             $table->id();
+            $table->integer('cliente_id')->unsigned();
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('filme_id')->unsigned();
+            $table->foreign('filme_id')->references('id')->on('filmes')->onUpdate('cascade')->onDelete('cascade');
+            $table->date('data_locacao');
             $table->timestamps();
         });
     }
