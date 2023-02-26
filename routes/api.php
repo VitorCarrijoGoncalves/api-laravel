@@ -4,12 +4,19 @@ use Illuminate\Support\Facades\Route;
 
 //Route::get('clientes', 'Api\ClienteApiController@index');
 
-Route::get('clientes/{id}/documento', 'Api/ClienteApiController@documento');
-Route::get('clientes/{id}/telefone', 'Api/ClienteApiController@telefone');
-Route::apiResource('clientes', 'Api/ClienteApiController');
+// Rota de clientes
+Route::get('clientes/{id}/filme-alugados', 'Api＼ClienteController@alugados');
+Route::get('clientes/{id}/documento', 'Api＼ClienteController@documento');
+Route::get('clientes/{id}/telefone', 'Api＼ClienteController@telefone');
+Route::apiResource('clientes', 'Api＼ClienteApiController');
 
-Route::get('documento/{id}/cliente', 'Api/DocumentoApiController@cliente');
-Route::apiResource('documento', 'Api/DocumentoApiController');
+// Rota de documentos de clientes
+Route::get('documento/{id}/cliente', 'Api＼DocumentoApiController@cliente');
+Route::apiResource('documento', 'Api＼DocumentoApiController');
 
-Route::get('telefone/{id}/cliente', 'Api/TelefoneApiController@cliente');
-Route::apiResource('telefone', 'Api/TelefoneApiController');
+// Rota de telefone de clientes
+Route::get('telefone/{id}/cliente', 'Api＼TelefoneApiController@cliente');
+Route::apiResource('telefone', 'Api＼TelefoneApiController');
+
+// Rota de filmes
+Route::apiResource('filme', 'Api＼FilmeApiController');

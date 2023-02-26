@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller as BaseController;
 use App\Models\Models\Cliente;
 use Illuminate\Support\Facades\Storage;
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-class MasterApiController extends Controller
+class MasterApiController extends BaseController
 {
 
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -35,7 +35,7 @@ class MasterApiController extends Controller
 
             $nameFile = "{$name}.{$extension}";
 
-            $upload = Image::make($dataForm[$this->upload])->resize(177, 236)->save(storage_path("app/public/{$this->path}/$nameFile", 70));
+            $upload = Image::make($dataForm[$this->upload])->resize($this->width, $this->height)->save(storage_path("app/public/{$this->path}/$nameFile", 70));
 
             if (!$upload) {
                 return response()->json(['error' => 'Falha ao fazer upload'], 500);
@@ -60,7 +60,7 @@ class MasterApiController extends Controller
         
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         
         $this->validate($request, $this->model->rules());
@@ -80,7 +80,7 @@ class MasterApiController extends Controller
 
             $nameFile = "{$name}.{$extension}";
 
-            $upload = Image::make($dataForm[$this->upload])->resize(177, 236)->save(storage_path("app/public/clientes/$nameFile", 70));
+            $upload = Image::make($dataForm[$this->upload])->resize($this->width, $this->height)->save(storage_path("app/public/clientes/$nameFile", 70));
 
             if (!$upload) {
                 return response()->json(['error' => 'Falha ao fazer upload'], 500);
